@@ -1,0 +1,26 @@
+{
+  "name": "430-project1-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scottrobertson97/430-project1-api.git"
+  },
+  "author": "Scott Robertson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scottrobertson97/430-project1-api/issues"
+  },
+  "homepage": "https://github.com/scottrobertson97/430-project1-api#readme",
+  "devDependencies": {
+    "eslint": "^5.6.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  }
+}
