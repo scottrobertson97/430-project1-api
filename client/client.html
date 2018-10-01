@@ -26,6 +26,14 @@
         userList.textContent = users;
         content.appendChild(userList);
       }
+
+      //if users in response, add to screen
+      if(obj.drinks) {
+        const drinkList = document.createElement('p');
+        const drinks = JSON.stringify(obj.drinks);
+        drinkList.textContent = drinks;
+        content.appendChild(drinkList);
+      }
     };
 
 
@@ -98,13 +106,81 @@
       //and the variable names the server will look for.
       //const formData = `name=${nameField.value}&age=${ageField.value}`;
 
-      const formData = JSON.stringify({
+      const formData = {
         "name":nameField.value,
         "age":ageField.value
-      });
+      };
+
+      console.dir(formData);
       
       //send our request with the data
-      xhr.send(formData);
+      xhr.send(JSON.stringify(formData));
+    
+      //prevent the browser's default action (to send the form on its own)
+      e.preventDefault();
+      //return false to prevent the browser from trying to change page
+      return false;
+    };
+    
+    		//function to send our post request
+    const sendDrinkPost = (e, drinkForm) => {
+      //grab the forms action (url to go to)
+      //and method (HTTP method - POST in this case)
+      const action = drinkForm.getAttribute('action');
+      const method = drinkForm.getAttribute('method');
+      
+      //grab the form's name and age fields so we can check user input
+      const drinkName = drinkForm.querySelector('#drinkName').value;
+      let ingredients = [];
+      for(let i = 0; i < 10; i++){
+        let oz = drinkForm.querySelector(`#ingredientOz_${i}`).value;
+        let name = drinkForm.querySelector(`#ingredientName_${i}`).value;
+        ingredients.push({
+          oz,
+          name
+        });
+      }
+      
+      //create a new Ajax request (remember this is asynchronous)
+      const xhr = new XMLHttpRequest();
+      //set the method (POST) and url (action field from form)
+      xhr.open(method, action);
+      
+      //set our request type to x-www-form-urlencoded
+      //which is one of the common types of form data. 
+      //This type has the same format as query strings key=value&key2=value2
+      xhr.setRequestHeader('Content-type', 'application/json');
+      //set our requested response type in hopes of a JSON response
+      
+      
+
+      xhr.setRequestHeader ('Accept', 'application/json');
+      
+      //set our function to handle the response
+      xhr.onload = () => handleResponse(xhr);
+      
+      //build our x-www-form-urlencoded format. Without ajax the 
+      //browser would do this automatically but it forcefully changes pages
+      //which we don't want.
+      //The format is the same as query strings, so key=value&key2=value2
+      //The 'name' fields from the inputs are the variable names sent to
+      //the server. 
+      //So ours might look like  name=test&age=22
+      //Again the 'name' fields in the form are the variable names in the string
+      //and the variable names the server will look for.
+      //const formData = `name=${nameField.value}&age=${ageField.value}`;
+
+      
+
+      const formData = {
+        "drinkName":drinkName,
+        "ingredients":ingredients
+      };
+
+      console.dir(formData);
+      
+      //send our request with the data
+      xhr.send(JSON.stringify(formData));
     
       //prevent the browser's default action (to send the form on its own)
       e.preventDefault();
@@ -147,7 +223,24 @@
 
       //set up submit button for name form
 			const nameForm = document.querySelector('#nameForm');
-			nameForm.addEventListener('submit', (e) => sendPost(e, nameForm));
+      nameForm.addEventListener('submit', (e) => sendPost(e, nameForm));
+
+      
+      
+      let html = '<label for="drinkName">Name: </label> <input id="drinkName" type="text" name="drinkName" />';
+      for(let i = 0; i < 10; i++){
+          html = `${html} <br /> `;
+          html = `${html} <label for="ingredientOz_${i}">Oz: </label> `;
+          html = `${html} <input id="ingredientOz_${i}" type="number" name="ingredientOz_${i}" min="0" max="5" step="0.25"/> `;
+          html = `${html} <label for="ingredientName_${i}">Ingredient: </label> `;
+          html = `${html} <input id="ingredientName_${i}" type="text" name="ingredientName_${i}" /> `;
+      }
+      html = `${html} <input type="submit" value="Add Drink" />`;
+      document.querySelector('#drinkForm').innerHTML = html;
+
+      //set up submit button for name form
+			const drinkForm = document.querySelector('#drinkForm');
+      drinkForm.addEventListener('submit', (e) => sendDrinkPost(e, drinkForm));
 		};
 
 		window.onload = init;
@@ -167,7 +260,8 @@
 		<form id="userForm" action="/getUsers" method="GET">
 			<select id='urlField'>
 				<option value='/getUsers'>/getUsers</option>
-				<option value='/notReal'>/notReal</option>
+        <option value='/notReal'>/notReal</option>
+        <option value='/getDrinks'>/getDrinks</option>
 			</select>
 			<select id="methodSelect">
 				<option value="GET">GET</option>
@@ -175,7 +269,14 @@
 			</select>
 			<input type="submit" value="Get User" />
 		</form>
-	</section>
+  </section>
+
+  <section id="drink">
+		<h3>Submit a cocktail recipe</h3>
+		<form id="drinkForm" action="/addDrink" method="POST">
+		</form>
+  </section>
+  
 	<section id="content">
 	</section>
 </body>

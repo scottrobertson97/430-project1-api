@@ -3,6 +3,7 @@
 // Same when your heroku app shuts down from inactivity
 // We will be working with databases in the next few weeks.
 const users = {};
+const drinks = {};
 
 // function to respond with a json object
 // takes request, response, status code and object to send
@@ -32,13 +33,24 @@ const notFound = (request, response) => {
   return respondJSON(request, response, 404, responseJSON);
 };
 
-//function to get the users
+// function to get the users
 const getUsers = (request, response) => {
   if (request.method === 'HEAD') {
     return respondJSONMeta(request, response, 200);
   }
   const responseJSON = {
     users,
+  };
+  return respondJSON(request, response, 200, responseJSON);
+};
+
+// function to get the users
+const getDrinks = (request, response) => {
+  if (request.method === 'HEAD') {
+    return respondJSONMeta(request, response, 200);
+  }
+  const responseJSON = {
+    drinks,
   };
   return respondJSON(request, response, 200, responseJSON);
 };
@@ -87,6 +99,55 @@ const addUser = (request, response, body) => {
   return respondJSONMeta(request, response, responseCode);
 };
 
+const addDrink = (request, response, body) => {
+  // default json message
+  const responseJSON = {
+    message: 'Name and age are both required.',
+  };
+  console.dir(body);
+  if (!body.drinkName) {
+    responseJSON.id = 'missingParams';
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  // default status code to 201 created
+  let responseCode = 201;
+
+  // if that user's name already exists in our object
+  // then switch to a 204 updated status
+  if (users[body.drinkName]) {
+    responseCode = 204;
+  } else {
+    // otherwise create an object with that name
+    drinks[body.drinkName] = {};
+  }
+  // ingredients
+  // add or update fields for this user name
+  drinks[body.drinkName].drinkName = body.drinkName;
+  const ingredients = [];
+  for (let i = 0; i < 10; i++) {
+    const oz = body[`ingredientOz_${i}`];
+    const name = body[`ingredientName_${i}`];
+    ingredients.push({
+      oz,
+      name,
+    });
+  }
+  drinks[body.drinkName].ingredients = ingredients;
+  console.dir(drinks[body.drinkName]);
+
+  // if response is created, then set our created message
+  // and sent response with a message
+  if (responseCode === 201) {
+    responseJSON.message = 'Created Successfully';
+    return respondJSON(request, response, responseCode, responseJSON);
+  }
+  // 204 has an empty payload, just a success
+  // It cannot have a body, so we just send a 204 without a message
+  // 204 will not alter the browser in any way!!!
+  return respondJSONMeta(request, response, responseCode);
+};
+
 // exports to set functions to public.
 // In this syntax, you can do getCats:getCats, but if they
 // are the same name, you can short handle to just getCats,
@@ -94,4 +155,6 @@ module.exports = {
   getUsers,
   notFound,
   addUser,
+  addDrink,
+  getDrinks,
 };

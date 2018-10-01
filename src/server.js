@@ -17,13 +17,15 @@ const urlStruct = {
   '/favicon.ico': htmlHandler.getFavicon,
   '/getUsers': jsonHandler.getUsers,
   '/addUser': jsonHandler.addUser,
+  '/addDrink': jsonHandler.addDrink,
+  '/getDrinks': jsonHandler.getDrinks,
   notFound: jsonHandler.notFound,
 };
 
 // handle POST requests
 const handlePost = (request, response, parsedUrl) => {
   // if post is to /addUser (our only POST url)
-  if (parsedUrl.pathname === '/addUser') {
+  if (parsedUrl.pathname === '/addDrink') {
     const res = response;
 
     // uploads come in as a byte stream that we need
@@ -49,11 +51,11 @@ const handlePost = (request, response, parsedUrl) => {
       // combine our byte array (using Buffer.concat)
       // and convert it to a string value (in this instance)
       const bodyString = Buffer.concat(body).toString();
-      
+
       const bodyParams = JSON.parse(bodyString);
 
       // pass to our addUser function
-      jsonHandler.addUser(request, res, bodyParams);
+      jsonHandler.addDrink(request, res, bodyParams);
     });
   }
 };
