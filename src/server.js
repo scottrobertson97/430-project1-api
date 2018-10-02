@@ -1,7 +1,7 @@
 const http = require('http'); // pull in the http server module
 const url = require('url'); // pull in the url module
 
-const query = require('querystring');
+// const query = require('querystring');
 
 // pull in our response handler file
 const jsonHandler = require('./jsonResponses.js');
@@ -15,8 +15,6 @@ const urlStruct = {
   '/': htmlHandler.getIndex,
   '/style.css': htmlHandler.getCss,
   '/favicon.ico': htmlHandler.getFavicon,
-  '/getUsers': jsonHandler.getUsers,
-  '/addUser': jsonHandler.addUser,
   '/addDrink': jsonHandler.addDrink,
   '/getDrinks': jsonHandler.getDrinks,
   notFound: jsonHandler.notFound,

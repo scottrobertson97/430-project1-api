@@ -68,43 +68,8 @@
         parseJSON(xhr, content);
       }
 		};
-
-		//function to send our post request
-    const sendPost = (e, nameForm) => {
-      //grab the forms action (url to go to)
-      //and method (HTTP method - POST in this case)
-      const nameAction = nameForm.getAttribute('action');
-      const nameMethod = nameForm.getAttribute('method');
-      
-      //grab the form's name and age fields so we can check user input
-      const nameField = nameForm.querySelector('#nameField');
-      const ageField = nameForm.querySelector('#ageField');
-      
-      const xhr = new XMLHttpRequest();
-      xhr.open(nameMethod, nameAction);
-      xhr.setRequestHeader('Content-type', 'application/json');
-      xhr.setRequestHeader ('Accept', 'application/json');
-      
-      //set our function to handle the response
-      xhr.onload = () => handleResponse(xhr);
-
-      const formData = {
-        "name":nameField.value,
-        "age":ageField.value
-      };
-
-      console.dir(formData);
-      
-      //send our request with the data
-      xhr.send(JSON.stringify(formData));
     
-      //prevent the browser's default action (to send the form on its own)
-      e.preventDefault();
-      //return false to prevent the browser from trying to change page
-      return false;
-    };
-    
-    		//function to send our post request
+    //function to send our post request
     const sendDrinkPost = (e, drinkForm) => {
       //grab the forms action (url to go to)
       //and method (HTTP method - POST in this case)
@@ -146,10 +111,7 @@
 		};
 		
 		//function to send an xhr request
-    const sendRequest = (e, userForm) => {			
-      const url = userForm.querySelector('#urlField').value;
-			const method = userForm.querySelector('#methodSelect').value;
-
+    const sendRequest = (e, method, url) => {	
       //create a new xhr (ajax) request. 
       //Remember that these are ASYNCHRONOUS
       const xhr = new XMLHttpRequest();
@@ -172,14 +134,6 @@
     };
 
 		const init = () => {
-      //set up submit button for user form
-			const userForm = document.querySelector("#userForm");			
-			userForm.addEventListener('submit', (e) => sendRequest(e, userForm));
-
-      //set up submit button for name form
-			const nameForm = document.querySelector('#nameForm');
-      nameForm.addEventListener('submit', (e) => sendPost(e, nameForm));
-
       
       
       let html = '<label for="drinkName">Name: </label> <input id="drinkName" type="text" name="drinkName" />';
@@ -190,12 +144,15 @@
           html = `${html} <label for="ingredientName_${i}">Ingredient: </label> `;
           html = `${html} <input id="ingredientName_${i}" type="text" name="ingredientName_${i}" /> `;
       }
-      html = `${html} <input type="submit" value="Add Drink" />`;
+      html = `${html} <br/ ><input type="submit" value="Add Drink" />`;
       document.querySelector('#drinkForm').innerHTML = html;
 
       //set up submit button for name form
 			const drinkForm = document.querySelector('#drinkForm');
       drinkForm.addEventListener('submit', (e) => sendDrinkPost(e, drinkForm));
+
+      const getDrinks = document.querySelector("#getDrinks");			
+			getDrinks.addEventListener('click', (e) => sendRequest(e, "GET", "/getDrinks"));
 		};
 
 		window.onload = init;
@@ -203,33 +160,13 @@
 	</script>
 </head>
 <body>
-	<section id="top">
-		<h3>POST Status Code Tests</h3>
-		<form id="nameForm" action="/addUser" method="POST">
-			<label for="name">Name: </label>
-			<input id="nameField" type="text" name="name" />
-			<label for="age">Age: </label>
-			<input id="ageField" type="number" name="age" min="0" max="100" step="1"/>
-			<input type="submit" value="Add User" />
-		</form>
-		<form id="userForm" action="/getUsers" method="GET">
-			<select id='urlField'>
-				<option value='/getUsers'>/getUsers</option>
-        <option value='/notReal'>/notReal</option>
-        <option value='/getDrinks'>/getDrinks</option>
-			</select>
-			<select id="methodSelect">
-				<option value="GET">GET</option>
-				<option value="HEAD">HEAD</option>
-			</select>
-			<input type="submit" value="Get User" />
-		</form>
-  </section>
-
   <section id="drink">
 		<h3>Submit a cocktail recipe</h3>
 		<form id="drinkForm" action="/addDrink" method="POST">
 		</form>
+    <br />
+    <br />
+    <button id="getDrinks" type="button">Get Drinks!</button>
   </section>
   
 	<section id="content">
