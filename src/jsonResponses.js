@@ -104,7 +104,7 @@ const addDrink = (request, response, body) => {
   const responseJSON = {
     message: 'Name and age are both required.',
   };
-  console.dir(body);
+  
   if (!body.drinkName) {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
@@ -115,7 +115,7 @@ const addDrink = (request, response, body) => {
 
   // if that user's name already exists in our object
   // then switch to a 204 updated status
-  if (users[body.drinkName]) {
+  if (drinks[body.drinkName]) {
     responseCode = 204;
   } else {
     // otherwise create an object with that name
@@ -124,17 +124,7 @@ const addDrink = (request, response, body) => {
   // ingredients
   // add or update fields for this user name
   drinks[body.drinkName].drinkName = body.drinkName;
-  const ingredients = [];
-  for (let i = 0; i < 10; i++) {
-    const oz = body[`ingredientOz_${i}`];
-    const name = body[`ingredientName_${i}`];
-    ingredients.push({
-      oz,
-      name,
-    });
-  }
-  drinks[body.drinkName].ingredients = ingredients;
-  console.dir(drinks[body.drinkName]);
+  drinks[body.drinkName].ingredients = body.ingredients;
 
   // if response is created, then set our created message
   // and sent response with a message

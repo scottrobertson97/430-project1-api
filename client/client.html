@@ -80,31 +80,13 @@
       const nameField = nameForm.querySelector('#nameField');
       const ageField = nameForm.querySelector('#ageField');
       
-      //create a new Ajax request (remember this is asynchronous)
       const xhr = new XMLHttpRequest();
-      //set the method (POST) and url (action field from form)
       xhr.open(nameMethod, nameAction);
-      
-      //set our request type to x-www-form-urlencoded
-      //which is one of the common types of form data. 
-      //This type has the same format as query strings key=value&key2=value2
       xhr.setRequestHeader('Content-type', 'application/json');
-      //set our requested response type in hopes of a JSON response
       xhr.setRequestHeader ('Accept', 'application/json');
       
       //set our function to handle the response
       xhr.onload = () => handleResponse(xhr);
-      
-      //build our x-www-form-urlencoded format. Without ajax the 
-      //browser would do this automatically but it forcefully changes pages
-      //which we don't want.
-      //The format is the same as query strings, so key=value&key2=value2
-      //The 'name' fields from the inputs are the variable names sent to
-      //the server. 
-      //So ours might look like  name=test&age=22
-      //Again the 'name' fields in the form are the variable names in the string
-      //and the variable names the server will look for.
-      //const formData = `name=${nameField.value}&age=${ageField.value}`;
 
       const formData = {
         "name":nameField.value,
@@ -141,36 +123,11 @@
         });
       }
       
-      //create a new Ajax request (remember this is asynchronous)
       const xhr = new XMLHttpRequest();
-      //set the method (POST) and url (action field from form)
       xhr.open(method, action);
-      
-      //set our request type to x-www-form-urlencoded
-      //which is one of the common types of form data. 
-      //This type has the same format as query strings key=value&key2=value2
       xhr.setRequestHeader('Content-type', 'application/json');
-      //set our requested response type in hopes of a JSON response
-      
-      
-
       xhr.setRequestHeader ('Accept', 'application/json');
-      
-      //set our function to handle the response
-      xhr.onload = () => handleResponse(xhr);
-      
-      //build our x-www-form-urlencoded format. Without ajax the 
-      //browser would do this automatically but it forcefully changes pages
-      //which we don't want.
-      //The format is the same as query strings, so key=value&key2=value2
-      //The 'name' fields from the inputs are the variable names sent to
-      //the server. 
-      //So ours might look like  name=test&age=22
-      //Again the 'name' fields in the form are the variable names in the string
-      //and the variable names the server will look for.
-      //const formData = `name=${nameField.value}&age=${ageField.value}`;
-
-      
+      xhr.onload = () => handleResponse(xhr);      
 
       const formData = {
         "drinkName":drinkName,
@@ -190,9 +147,7 @@
 		
 		//function to send an xhr request
     const sendRequest = (e, userForm) => {			
-      //get url from the form, the vaule in the select
       const url = userForm.querySelector('#urlField').value;
-      //get the request method
 			const method = userForm.querySelector('#methodSelect').value;
 
       //create a new xhr (ajax) request. 
