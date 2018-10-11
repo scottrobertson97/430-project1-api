@@ -18,20 +18,24 @@
         p.textContent = `Message: ${obj.message}`;
         content.appendChild(p);
       }
-      
-      //if users in response, add to screen
-      if(obj.users) {
-        const userList = document.createElement('p');
-        const users = JSON.stringify(obj.users);
-        userList.textContent = users;
-        content.appendChild(userList);
-      }
 
       //if users in response, add to screen
       if(obj.drinks) {
-        const drinkList = document.createElement('p');
-        const drinks = JSON.stringify(obj.drinks);
-        drinkList.textContent = drinks;
+        const drinkList = document.createElement('section');
+
+        let drinkHTML = '<article>';
+        // loop through the list of drinks
+        for(let d in obj.drinks){
+          // h1 title of drink name
+          drinkHTML = `${drinkHTML}<h1>${obj.drinks[d].drinkName}</h1>`;
+          // loop through the list of ingredients for this drink
+          obj.drinks[d].ingredients.forEach(ingredient => {
+            // _Oz of ____
+            drinkHTML = `${drinkHTML}<p>${ingredient.oz}Oz of ${ingredient.name}</p>`;
+          });
+        }
+        drinkHTML = `${drinkHTML}</article>`;
+        drinkList.innerHTML = drinkHTML;
         content.appendChild(drinkList);
       }
     };
