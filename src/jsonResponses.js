@@ -87,12 +87,6 @@ const getDrinks = (request, response) => {
         trimmedDrinks[d.drinkName] = d;
       }
     });
-    // for (let d of Object.values(drinks)) {
-    //  // if the ingredinet matches the search, then add it to the trimmed list
-    //  if (drinks[d].baseIngredient === searchIngredient) {
-    //    trimmedDrinks.d = drinks[d];
-    //  }
-    // }
   }
   const responseJSON = {
     drinks: trimmedDrinks,
