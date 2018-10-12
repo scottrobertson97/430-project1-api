@@ -4,7 +4,38 @@ const url = require('url');
 // When node shuts down this will be cleared.
 // Same when your heroku app shuts down from inactivity
 // We will be working with databases in the next few weeks.
-const drinks = {};
+const drinks = {
+  'Whiskey Sour': {
+    drinkName: 'Whiskey Sour',
+    baseIngredient: 'whiskey',
+    ingredients: [
+      { oz: '2', name: 'Bourbon' },
+      { oz: '1', name: 'Simple Syrup' },
+      { oz: '0.5', name: 'Lime Juice' },
+      { oz: '0.5', name: 'Lemon Juice' },
+    ],
+  },
+  Margarita: {
+    drinkName: 'Margarita',
+    baseIngredient: 'tequila',
+    ingredients: [
+      { oz: '2', name: 'Tequila' },
+      { oz: '1', name: 'Lime Juice' },
+      { oz: '0.75', name: 'Agave Nector' },
+      { oz: '0.75', name: 'Triple Sec' },
+    ],
+  },
+  Cosmopolitan: {
+    drinkName: 'Cosmopolitan',
+    baseIngredient: 'vodka',
+    ingredients: [
+      { oz: '1.5', name: 'Citrus Vodka' },
+      { oz: '1', name: 'Triple Sec' },
+      { oz: '0.5', name: 'Lime Juice' },
+      { oz: '0.25', name: 'Cranberry Juice' },
+    ],
+  },
+};
 
 // function to respond with a json object
 // takes request, response, status code and object to send
@@ -45,8 +76,8 @@ const getDrinks = (request, response) => {
   }
   // object holding drinks that have the base ingredient that was searched
   let trimmedDrinks = {};
-  // if na, use all
-  if (searchIngredient === 'na') {
+  // if na or none, use all
+  if (searchIngredient === 'na' || !searchIngredient) {
     trimmedDrinks = drinks;
   } else {
     // loop through drinks
@@ -72,7 +103,7 @@ const getDrinks = (request, response) => {
 const addDrink = (request, response, body) => {
   // default json message
   const responseJSON = {
-    message: 'Name of drink required. Each dink must have a base ingredient. Each ingredient must have a oz and name pair. There must have more than 1 ingredient.',
+    message: 'Name of drink required. Each ingredient must have a oz and name pair. There must be more than 1 ingredient.',
   };
 
   // make sure each ingredient has a oz name pair
