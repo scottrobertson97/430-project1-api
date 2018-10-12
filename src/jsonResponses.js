@@ -1,3 +1,6 @@
+const query = require('querystring');
+const url = require('url');
+
 // Note this object is purely in memory
 // When node shuts down this will be cleared.
 // Same when your heroku app shuts down from inactivity
@@ -34,11 +37,27 @@ const notFound = (request, response) => {
 
 // function to get the users
 const getDrinks = (request, response) => {
+  // get the search ingredient param
+  const searchIngredient = url.parse(request.url, true).query.searchIngredient;
   if (request.method === 'HEAD') {
     return respondJSONMeta(request, response, 200);
   }
+  // object holding drinks that have the base ingredient that was searched
+  let trimmedDrinks = {};
+  // if na, use all
+  if(searchIngredient == 'na'){
+    trimmedDrinks = drinks;
+  } else {
+    // loop through drinks
+    for(let d in drinks){
+      // if the ingredinet matches the search, then add it to the trimmed list
+      if(drinks[d].baseIngredient == searchIngredient){
+        trimmedDrinks.d = drinks[d];
+      }
+    }
+  }
   const responseJSON = {
-    drinks,
+    drinks: trimmedDrinks
   };
   return respondJSON(request, response, 200, responseJSON);
 };
@@ -46,7 +65,7 @@ const getDrinks = (request, response) => {
 const addDrink = (request, response, body) => {
   // default json message
   const responseJSON = {
-    message: 'Name of drink required, also each ingredient must have a oz and name pair, also must have more than 1 ingredient',
+    message: 'Name of drink required. Each dink must have a base ingredient. Each ingredient must have a oz and name pair. There must have more than 1 ingredient.',
   };
 
   // make sure each ingredient has a oz name pair
@@ -67,8 +86,9 @@ const addDrink = (request, response, body) => {
     }
   }
 
+  const badIngredients = (unFilledIngredient || trimmedIngredients.length === 0);
   // give missing params code if, no drink name or, not  filled out ingredient, or no ingredients.
-  if (!body.drinkName || unFilledIngredient || trimmedIngredients.length === 0) {
+  if (!body.drinkName || !body.baseIngredient || badIngredients) {
     responseJSON.id = 'missingParams';
     return respondJSON(request, response, 400, responseJSON);
   }
@@ -87,6 +107,7 @@ const addDrink = (request, response, body) => {
   // ingredients
   // add or update fields for this user name
   drinks[body.drinkName].drinkName = body.drinkName;
+  drinks[body.drinkName].baseIngredient = body.baseIngredient;
   drinks[body.drinkName].ingredients = trimmedIngredients;
 
   // if response is created, then set our created message
