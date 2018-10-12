@@ -82,6 +82,7 @@
       
       //grab the form's name and age fields so we can check user input
       const drinkName = drinkForm.querySelector('#drinkName').value;
+			const baseIngredient = drinkForm.querySelector('#baseIngredient').value;
       let ingredients = [];
       for(let i = 0; i < 10; i++){
         let oz = drinkForm.querySelector(`#ingredientOz_${i}`).value;
@@ -100,6 +101,7 @@
 
       const formData = {
         "drinkName":drinkName,
+				"baseIngredient":baseIngredient,
         "ingredients":ingredients
       };
 
@@ -118,9 +120,12 @@
     const sendRequest = (e, method, url) => {	
       //create a new xhr (ajax) request. 
       //Remember that these are ASYNCHRONOUS
-      const xhr = new XMLHttpRequest();
+			const xhr = new XMLHttpRequest();
+			
+			const searchIngredient = document.querySelector('#searchIngredient').value;
+
       //set the xhr to a request to a certain URL
-      xhr.open(method, url);
+			xhr.open(method, `${url}?searchIngredient=${searchIngredient}`);
       //Set the accept headers to the desired response mime type
       //Server does NOT have to support this. It is a gentle request.
       xhr.setRequestHeader ("Accept", 'application/json');
@@ -138,15 +143,21 @@
     };
 
 		const init = () => {
-      
-      
       let html = '<label for="drinkName">Name: </label> <input id="drinkName" type="text" name="drinkName" />';
+      html = `${html}<br /><label for="baseIngredient">Base Ingredient: </label><select id="baseIngredient" name="baseIngredient">
+        <option value="other">Other</option>
+        <option value="vodka">Vodka</option>
+        <option value="gin">Gin</option>
+        <option value="rum">Rum</option>
+        <option value="whiskey">Whiskey</option>
+        <option value="tequila">Tequila</option>
+      </select>`;
       for(let i = 0; i < 10; i++){
-          html = `${html} <br /> `;
-          html = `${html} <label for="ingredientOz_${i}">Oz: </label> `;
-          html = `${html} <input id="ingredientOz_${i}" type="number" name="ingredientOz_${i}" min="0" max="5" step="0.25"/> `;
-          html = `${html} <label for="ingredientName_${i}">Ingredient: </label> `;
-          html = `${html} <input id="ingredientName_${i}" type="text" name="ingredientName_${i}" /> `;
+        html = `${html} <br />
+        <label for="ingredientOz_${i}">Oz: </label>
+      	<input id="ingredientOz_${i}" type="number" name="ingredientOz_${i}" min="0" max="5" step="0.25"/>
+        <label for="ingredientName_${i}">Ingredient: </label>
+        <input id="ingredientName_${i}" type="text" name="ingredientName_${i}" /> `;
       }
       html = `${html} <br/ ><input type="submit" value="Add Drink" />`;
       document.querySelector('#drinkForm').innerHTML = html;
@@ -169,7 +180,16 @@
 		<form id="drinkForm" action="/addDrink" method="POST">
 		</form>
     <br />
-    <br />
+		<br />
+		<label for="searchIngredient">Seach Ingredient: </label><select id="searchIngredient" name="searchIngredient">
+			<option value="na">N/A</option>
+			<option value="other">Other</option>
+			<option value="vodka">Vodka</option>
+			<option value="gin">Gin</option>
+			<option value="rum">Rum</option>
+			<option value="whiskey">Whiskey</option>
+			<option value="tequila">Tequila</option>
+		</select>
     <button id="getDrinks" type="button">Get Drinks!</button>
   </section>
   
