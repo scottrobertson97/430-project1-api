@@ -2,7 +2,6 @@ const http = require('http'); // pull in the http server module
 const url = require('url'); // pull in the url module
 
 
-
 // pull in our response handler file
 const jsonHandler = require('./jsonResponses.js');
 const htmlHandler = require('./htmlResponses.js');

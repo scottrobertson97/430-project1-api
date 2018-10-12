@@ -1,4 +1,3 @@
-const query = require('querystring');
 const url = require('url');
 
 // Note this object is purely in memory
@@ -38,26 +37,34 @@ const notFound = (request, response) => {
 // function to get the users
 const getDrinks = (request, response) => {
   // get the search ingredient param
-  const searchIngredient = url.parse(request.url, true).query.searchIngredient;
+  const parsedUrl = url.parse(request.url, true);
+  const { searchIngredient } = parsedUrl.query;
+
   if (request.method === 'HEAD') {
     return respondJSONMeta(request, response, 200);
   }
   // object holding drinks that have the base ingredient that was searched
   let trimmedDrinks = {};
   // if na, use all
-  if(searchIngredient == 'na'){
+  if (searchIngredient === 'na') {
     trimmedDrinks = drinks;
   } else {
     // loop through drinks
-    for(let d in drinks){
-      // if the ingredinet matches the search, then add it to the trimmed list
-      if(drinks[d].baseIngredient == searchIngredient){
-        trimmedDrinks.d = drinks[d];
+    const drinkArray = Object.values(drinks);
+    drinkArray.forEach((d) => {
+      if (d.baseIngredient === searchIngredient) {
+        trimmedDrinks[d.drinkName] = d;
       }
-    }
+    });
+    // for (let d of Object.values(drinks)) {
+    //  // if the ingredinet matches the search, then add it to the trimmed list
+    //  if (drinks[d].baseIngredient === searchIngredient) {
+    //    trimmedDrinks.d = drinks[d];
+    //  }
+    // }
   }
   const responseJSON = {
-    drinks: trimmedDrinks
+    drinks: trimmedDrinks,
   };
   return respondJSON(request, response, 200, responseJSON);
 };
